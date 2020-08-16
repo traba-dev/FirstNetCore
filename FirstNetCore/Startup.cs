@@ -67,6 +67,8 @@ namespace FirstNetCore
 
                 endpoints.MapAreaControllerRoute("user", "user",
                     "user/{controller}/{action}/{id?}");
+                endpoints.MapAreaControllerRoute("Principal", "Principal",
+                    "Principal/{controller}/{action}/{id?}");
 
                 endpoints.MapControllerRoute(
                     name: "default",
