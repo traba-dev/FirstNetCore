@@ -8,23 +8,67 @@ using Microsoft.Extensions.Logging;
 using FirstNetCore.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using System.Net.NetworkInformation;
+using FirstNetCore.Areas.User.Models;
+using FirstNetCore.Areas.Principal.Controllers;
 
 namespace FirstNetCore.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IServiceProvider serviceProvider;
-
-        public HomeController(ILogger<HomeController> logger, IServiceProvider serviceProvider)
+        private SignInManager<IdentityUser> _signInManager;
+        //private IServiceProvider serviceProvider;
+        private static LoginModels _model = null;
+        private LUsuario LUsuario;
+        public HomeController(
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            ILogger<HomeController> logger)
         {
             _logger = logger;
-            this.serviceProvider = serviceProvider;
+            _signInManager = signInManager;
+            this.LUsuario = new LUsuario(userManager, signInManager, roleManager);
+    
         }
 
         public async Task<IActionResult> Index()
         {
             //await CreateRolesAsync(this.serviceProvider);
+
+            if (_signInManager.IsSignedIn(User))
+            {
+                return Redirect("/Principal/Principal/Principal");
+            }
+
+
+            if (_model == null)
+            {
+                return View();
+            } else
+            {
+                return View(_model);
+            }
+            
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(LoginModels model)
+        {
+            //await CreateRolesAsync(this.serviceProvider);
+            if (ModelState.IsValid)
+            {
+                var result = await LUsuario.userLoginAsync(model);
+                if (result.Succeeded)
+                {
+                    return Redirect("/Principal/Principal/Principal");
+                } else
+                {
+                    model.Error = "Correo o Contraseña Inválidos";
+                    _model = model;
+                    return Redirect("/");
+                }
+            }
             return View();
         }
 
