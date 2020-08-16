@@ -30,7 +30,9 @@ namespace FirstNetCore
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -68,7 +70,7 @@ namespace FirstNetCore
                 endpoints.MapAreaControllerRoute("user", "user",
                     "user/{controller}/{action}/{id?}");
                 endpoints.MapAreaControllerRoute("Principal", "Principal",
-                    "Principal/{controller}/{action}/{id?}");
+                    "Principal/{controller=Principal}/{action}/{id?}");
 
                 endpoints.MapControllerRoute(
                     name: "default",

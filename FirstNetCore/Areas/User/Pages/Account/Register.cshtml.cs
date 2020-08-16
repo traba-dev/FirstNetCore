@@ -49,7 +49,7 @@ namespace FirstNetCore.Areas.User.Pages.Account
         {
             if (await RegisterUser(input))
             {
-                return Redirect("/Principal/Principal?area=Principal");
+                return Redirect("/Principal/Principal/Principal");
             }
             return Redirect("/user/Register");
         }
@@ -92,6 +92,7 @@ namespace FirstNetCore.Areas.User.Pages.Account
                     }
                     else
                     {
+                        await userManager.AddToRoleAsync(user, "User");
                         await signInManager.SignInAsync(user, isPersistent: false);
                         isSucces = true;
                     }
