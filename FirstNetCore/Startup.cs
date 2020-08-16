@@ -32,8 +32,29 @@ namespace FirstNetCore
                     Configuration.GetConnectionString("DefaultConnection")));
             //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             //    .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.LoginPath = "/Home/Index";
+                options.AccessDeniedPath = "/user/Account/AccessDenied";
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Authorization", policy => policy.RequireRole("Admin", "User"));
+            });
+            //Configuración para bloquear usuarios con varios intentos
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2); //Tiempo de espera después de bloqueado
+                options.Lockout.MaxFailedAccessAttempts = 3; //Intentos de bloqueo
+                options.Lockout.AllowedForNewUsers = true; //Permite bloqueo a nuevos usuarios
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

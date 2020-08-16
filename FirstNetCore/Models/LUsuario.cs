@@ -18,7 +18,7 @@ namespace FirstNetCore.Models
 
         internal async Task<SignInResult> userLoginAsync(LoginModels loginModels)
         {
-            var result = await this.signInManager.PasswordSignInAsync(loginModels.Email, loginModels.Password, false, lockoutOnFailure: false);
+            var result = await this.signInManager.PasswordSignInAsync(loginModels.Email, loginModels.Password, false, lockoutOnFailure: true);
             return result;
         }
     }

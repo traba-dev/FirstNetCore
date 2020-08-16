@@ -7,10 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FirstNetCore.Areas.Principal.Controllers
 {
-    [Authorize]
+    
     [Area("Principal")]
     public class PrincipalController : Controller
     {
+
+        
+        public PrincipalController()
+        {
+        }
+        //[Authorize(Roles = "User,Admin")] //Autorización basada en roles
+        [Authorize(Policy = "Authorization")] //Autorización basada en políticas
         public IActionResult Principal()
         {
             return View();

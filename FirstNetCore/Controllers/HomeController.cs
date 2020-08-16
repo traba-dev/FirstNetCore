@@ -36,7 +36,7 @@ namespace FirstNetCore.Controllers
         public async Task<IActionResult> Index()
         {
             //await CreateRolesAsync(this.serviceProvider);
-
+            //Verifica si ya inició sesión
             if (_signInManager.IsSignedIn(User))
             {
                 return Redirect("/Principal/Principal/Principal");
@@ -62,6 +62,11 @@ namespace FirstNetCore.Controllers
                 if (result.Succeeded)
                 {
                     return Redirect("/Principal/Principal/Principal");
+                } else if (result.IsLockedOut) 
+                {
+                    model.Error = "Cuenta de usuario bloqueada";
+                    _model = model;
+                    return Redirect("/");
                 } else
                 {
                     model.Error = "Correo o Contraseña Inválidos";
